@@ -33,7 +33,7 @@ python finetuning_distilbert.py
 #OAR --stdout result_finetuning.txt    ' Renvoie le résultat sous forme d'un fichier result_finetuning.txt'
 python finetuning_distilbert.py
 ```
-* Executer finetuning_distilbert.sh via ces deux commandes
+* Exécuter finetuning_distilbert.sh via ces deux commandes
 ```
 chmod +x finetuning_distilbert.sh
 oarsub -S ./finetuning_distilbert.sh
