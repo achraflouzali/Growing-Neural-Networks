@@ -3,7 +3,7 @@ Ce repository Git contient les codes utilisés lors du stage et qui étaient con
 
 ## Papiers de recherche sur les transformers, réseaux de neurones grossissants...
 
-__[Attention is all you need](https://arxiv.org/abs/1706.03762)__
+__[Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf)__
 
 __[BERT](https://arxiv.org/pdf/1810.04805.pdf)__
 
@@ -33,7 +33,7 @@ python finetuning_distilbert.py
 #OAR --stdout result_finetuning.txt    ' Renvoie le résultat sous forme d'un fichier result_finetuning.txt'
 python finetuning_distilbert.py
 ```
-* Executer finetuning_distilbert.sh via ces deux commandes
+* Exécuter finetuning_distilbert.sh via ces deux commandes
 ```
 chmod +x finetuning_distilbert.sh
 oarsub -S ./finetuning_distilbert.sh
