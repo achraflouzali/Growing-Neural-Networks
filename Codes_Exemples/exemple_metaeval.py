@@ -95,7 +95,7 @@ def exp(chosen_model = "distilroberta-base", chosen_task = "total"):
             ### Definition of standard Training Arguments
             training_args = TrainingArguments("test_trainer",logging_strategy='epoch', evaluation_strategy="epoch", learning_rate=2e-05, num_train_epochs=15, save_strategy="epoch", eval_accumulation_steps=1, load_best_model_at_end=True, metric_for_best_model=metric.name)
         
-            trainer = CustomTrainer(model=model, 
+            trainer = Trainer(model=model, 
                         args=training_args, train_dataset=train,
                         eval_dataset=validation,compute_metrics=compute_metrics)
             trainer.train()
