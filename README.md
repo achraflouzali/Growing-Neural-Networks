@@ -36,5 +36,5 @@ python finetuning_distilbert.py
 * Executer finetuning_distilbert.sh via ces deux commandes
 ```
 chmod +x finetuning_distilbert.sh
-oarsub -S ./fninetuning_distilbert.sh
+oarsub -S ./finetuning_distilbert.sh
 ```
