@@ -23,7 +23,7 @@ oarsub -I -l gpu=1 -t exotic
 python finetuning_distilbert.py
 ```
 ## Réserver un gpu sur Grid5000 et run le fichier test
-* Créer le fichier finetuning_distilbert.sh qui va executer finetuning_distilbert.py plus tard  
+* Créer le fichier finetuning_distilbert.sh qui exécutera finetuning_distilbert.py plus tard  
 `* Contenu du fichier finetuning_distilbert.sh`
  ```
 #!/bin/bash
