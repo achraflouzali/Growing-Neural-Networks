@@ -3,7 +3,7 @@ Ce repository Git contient les codes utilisés lors du stage et qui étaient con
 
 ## Papiers de recherche sur les transformers, réseaux de neurones grossissants...
 
-__[Attention is all you need](https://arxiv.org/abs/1706.03762)__
+__[Attention is all you need](https://arxiv.org/pdf/1706.03762.pdf)__
 
 __[BERT](https://arxiv.org/pdf/1810.04805.pdf)__
 
