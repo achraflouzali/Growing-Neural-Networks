@@ -13,12 +13,28 @@ __[Growing Neural Networks Achieve Flatter Minima](https://hal.archives-ouvertes
 
 __[Documentation des transformers HuggingFace](https://huggingface.co/docs/transformers/main/en/index)__\
 __[Grid 5000 documentation](https://www.grid5000.fr/w/Getting_Started)__
-
-## Réserver un gpu sur Grid5000 et run le fichier test 
+__[Guide pour l'utilisation de OAR] (https://gricad-doc.univ-grenoble-alpes.fr/hpc/joblaunch/)
+## Réserver un gpu sur Grid5000 et run le fichier test en mode interactif
 ```
 ssh alouzali@access.grid5000.fr
 ssh nancy
 source /home/alouzali/achenv/bin/activate
 oarsub -I -l gpu=1 -t exotic
 python finetuning_distilbert.py
+```
+## Réserver un gpu sur Grid5000 et run le fichier test
+* Créer le fichier finetuning_distilbert.sh qui va executer finetuning_distilbert.py plus tard  
+`* Contenu du fichier finetuning_distilbert.sh`
+ ```
+#!/bin/bash
+#OAR -n test_script
+#OAR -t exotic
+#OAR -l /gpu=1
+#OAR --stdout result_finetuning.txt    ' Renvoie le résultat sous forme d'un fichier result_finetuning.txt'
+python finetuning_distilbert.py
+```
+* Executer finetuning_distilbert.sh via ces deux commandes
+```
+chmod +x finetuning_distilbert.sh
+oarsub -S ./fninetuning_distilbert.sh
 ```
