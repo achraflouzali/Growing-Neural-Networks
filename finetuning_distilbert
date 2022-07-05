@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #OAR -n test_script
 #OAR -t exotic
 #OAR -l /gpu=1
