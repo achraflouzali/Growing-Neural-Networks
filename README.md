@@ -19,6 +19,6 @@ __[Grid 5000 documentation](https://www.grid5000.fr/w/Getting_Started)__
 ssh alouzali@access.grid5000.fr
 ssh nancy
 source /home/alouzali/achenv/bin/activate
-oarsub -l gpu=1 -I -q production
+oarsub -I -l gpu=1 -t exotic
 python finetuning_distilbert.py
 ```
