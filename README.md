@@ -20,7 +20,7 @@ ssh alouzali@access.grid5000.fr
 ssh nancy
 source /home/alouzali/achenv/bin/activate
 oarsub -I -l gpu=1 -t exotic
-python finetuning_distilbert(1).py
+python finetuning_distilbert.py
 ```
 ## Réserver un gpu sur Grid5000 et run le fichier test
 * Créer le fichier finetuning_distilbert.sh qui va executer finetuning_distilbert.py plus tard  
