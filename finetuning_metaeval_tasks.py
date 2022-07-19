@@ -24,7 +24,6 @@ total_tasks=['wic', 'cola', 'justice', 'utilitarianism', 'virtue', 'emobank-arou
 v=time.strftime('%A %d/%m/%Y %H:%M:%S')
 v=v.replace("/","-")
 v=v.replace(":","-")
-v='Monday 18-07-2022 14-45-34'
 lr_l=[2e-05,2e-04,2e-03,2e-02,2e-01]
 num_epochs=[5,10,15,20]
 wandb.login()
