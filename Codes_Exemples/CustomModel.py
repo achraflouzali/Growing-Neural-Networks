@@ -93,6 +93,113 @@ from transformers.utils import (
     logging,
 )
 
+class ClassificationHead(nn.Module):
+    """Head for sentence-level classification tasks."""
+
+    def __init__(self, config):
+        super().__init__()
+        #distil roberta : confi.hidden_size = 768
+        #roberta-large : config.hidden_size = 1024.
+        self.dense = nn.Linear(config.hidden_size, config.hidden_size)
+        classifier_dropout = (
+            config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
+        )
+        self.dropout = nn.Dropout(classifier_dropout)
+        self.out_proj = nn.Linear(config.hidden_size, config.num_labels)
+    def get_weights(self):
+        W = [self.dense.weight, self.out_proj.weight]
+        return W
+    def get_bias(self):
+        B = [self.dense.bias, self.out_proj.bias]
+        return B
+
+    def forward(self, features, **kwargs):
+        x = features[:, 0, :]  # take <s> token (equiv. to [CLS])
+        x = self.dropout(x)
+        x = self.dense(x)
+        x = torch.tanh(x)
+        x = self.dropout(x)
+        x = self.out_proj(x)
+        return x
+
+class GrowingClassificationHead(nn.Module):
+    """Head for sentence-level classification tasks."""
+
+    def __init__(self, config, number_of_additions):
+        super().__init__()
+        #self.dense = nn.Linear(config.hidden_size, config.hidden_size) -> c'est celle que l'on construit
+        classifier_dropout = (
+            config.classifier_dropout if config.classifier_dropout is not None else config.hidden_dropout_prob
+        )
+        self.dropout = nn.Dropout(classifier_dropout)
+        self.out_proj = nn.Linear(config.hidden_size, config.num_labels)
+
+
+        self.hidden_size = config.hidden_size #total number of nodes to add
+        self.accessible_positions = [i for i in range(self.hidden_size)]
+        self.number_of_additions = number_of_additions #total number of insertion steps to do
+        self.current_insertion = 1 #current number of insertion steps
+        self.already_sampled = [] #already sampled insertion positions
+        self.sampled_nodes = [] #current sampled insertion positions
+        self.weight_dict = {}
+
+
+    def number_of_nodes_to_add(self): # to call before insertion to be sure how many neurons to insert
+        if len(self.already_sampled) == self.hidden_size:
+            self.nodes_to_add = 0
+        elif self.current_insertion != self.number_of_additions:
+            self.nodes_to_add = math.floor(self.hidden_size/self.number_of_additions)
+        else:
+            self.nodes_to_add = self.hidden_size - len(self.already_sampled)
+
+    def unitary_weight(self, i, continuity = False):
+        if i in self.sampled_nodes:
+            if continuity:
+                weight = torch.zeros([self.hidden_size, 1], requires_grad=True).to(device='cuda')
+                with torch.no_grad():
+                    weight[i] = 1.
+                weight = nn.Parameter(weight, requires_grad=True).to(device='cuda')
+            else:
+                w = torch.empty(self.hidden_size, 1).to(device='cuda')
+                #Check Initialization
+                weight = nn.Parameter(w.uniform_(-0.5, 0.5), requires_grad=True).to(device='cuda')
+        return weight
+
+    def insertion(self):
+        self.number_of_nodes_to_add()
+        if self.nodes_to_add != 0:
+            self.sampled_nodes = random.sample(self.accessible_positions, self.nodes_to_add)
+            #update the accessible positions : to bring at the end
+            for i in self.sampled_nodes:
+                self.accessible_positions.remove(i)
+            self.already_sampled += self.sampled_nodes
+            print("GROWIIINNNGGG", len(self.already_sampled))
+
+    def get_weights(self):
+        W = [self.out_proj.weight]+ list(self.weight_dict.values())
+        return W
+    def get_bias(self):
+        B = [self.out_proj.bias]
+        return B
+    def forward(self, features, **kwargs):
+        x = features[:, 0, :]  # take <s> token (equiv. to [CLS])
+        x = self.dropout(x)
+        # x = self.dense(x)  c'est ici qu'on change
+        # x = torch.tanh(x)
+        y=torch.transpose(x.clone(), 0, 1)
+
+        for j in range(len(x[0])):
+            if j in self.sampled_nodes:
+                self.weight_dict[j] = self.unitary_weight(j)
+            if j in self.already_sampled:
+                y[j] = torch.tanh(x.matmul(self.weight_dict[j]).view(-1))
+
+        x = torch.transpose(y, 0, 1)
+        x = self.dropout(x)
+        x = self.out_proj(x)
+        return x
+
+
 
 
 class CustomModel(RobertaForSequenceClassification):
