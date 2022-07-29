@@ -51,6 +51,8 @@ class Net(nn.Module):
       output = F.log_softmax(x, dim=1)
       return output
 
+# Dummy Data
+
 D_in, D_out = 10, 2
 
 Exemplesx = []
@@ -61,9 +63,6 @@ for i in range (0,200):
     Exemplesx.append(x)
     Exemplesy.append(y)
 
-# define random data
-random_input = Variable(torch.randn(1,10))
-random_target = Variable(torch.randn(2,1))
 
 my_nn = Net()
 my_nn.add_dimensions()
