@@ -26,12 +26,15 @@ total_tasks=['wic', 'movie_rationales', 'justice', 'utilitarianism', 'virtue', '
  'recast_factuality', 'recast_verbnet', 'recast_verbcorner', 'recast_ner', 'recast_sentiment',
  'recast_megaveridicality', 'boolq', 'commonsense', 'hate', 'irony', 'offensive', 'rotten_tomatoes',
  'subj_number', 'obj_number', 'past_present', 'coordination_inversion', 'odd_man_out',
- 'bigram_shift', 'hover', 'cola', 'eraser_multi_rc',  'answer_selection_experiments']
+ 'bigram_shift', 'hover', 'cola', 'eraser_multi_rc',  'answer_selection_experiments']   # binary tasks with train,validation and test sets
 
 v=time.strftime('%d-%m--%-H-%M')
 lr_l=[2e-05,2e-04,2e-03,2e-02,2e-01]
 num_epochs=[5,10,15,20]
-wandb.login()
+wandb.login()                                                                          # you have to create a W&B account to log the learning data
+
+
+
 def compute_metrics(eval_pred):
     logits, labels = eval_pred
     predictions = np.argmax(logits, axis=-1)
@@ -39,6 +42,7 @@ def compute_metrics(eval_pred):
 
 
 def fusion_dataset(L):
+    ''' Function to merge and shuffle datasets of binary tasks '''
   l_train=[]
   l_validation=[]
   l_test=[]
@@ -66,7 +70,11 @@ def fusion_dataset(L):
   return datasets.DatasetDict({"train":Dataset.from_pandas(df_train),
                                "validation":Dataset.from_pandas(df_validation),
                                "test":Dataset.from_pandas(df_test)})
+
+
+
 logger = logging.get_logger(__name__)
+
 class CustomTrainer(Trainer):
     def __init__(self, input_size, task, prior0 = 0.5, device="cuda", *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -229,7 +237,11 @@ class CustomTrainer(Trainer):
 
 
 
+        
+        
 def metaev(mission,lr,num_epochs,model_name,tasks):
+    '''Function to finetune a model on tasks : upper bound to fine tune the model to the tasks independently, lower bound to fine tune the model to the dataset of 
+        of every task combined'''
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         def compute_metrics(eval_pred):
            logits, labels = eval_pred
@@ -245,7 +257,7 @@ def metaev(mission,lr,num_epochs,model_name,tasks):
         model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
         if mission=='ub':
                 for task in tasks:
-                        run = wandb.init(project="model= "+ model_name+" lr= "+str(lr)+"  nepoch= "+str(num_epochs),group='   '+v,name=task)
+                        run = wandb.init(project="model= "+ model_name+" lr= "+str(lr)+"  nepoch= "+str(num_epochs),group='   '+v,name=task)   #to create a unique run each time in W&B with specifying the model,learning rate, the number of epoch and the date and time 
                         training_args = TrainingArguments(task,
                         evaluation_strategy="epoch",
                         save_strategy="no",
@@ -257,20 +269,23 @@ def metaev(mission,lr,num_epochs,model_name,tasks):
                         )
                         dataset =load_and_align(task)
                         tokenized_dataset=dataset.map(tokenize_function,batched=True)
-                        train= tokenized_dataset["train"].shuffle(seed=42).select(range(len(tokenized_dataset['train'])//4))
-                        eval = tokenized_dataset["validation"].shuffle(seed=42).select(range(len(tokenized_dataset['validation'])//4))                        
+                        train= tokenized_dataset["train"]
+                        eval = tokenized_dataset["validation"]
                         trainer = CustomTrainer(model=model,input_size=len(train),task = task,prior0=train['label'].count(0)/len(train), args=training_args, train_dataset=train, eval_dataset=eval,compute_metrics=compute_metrics)
                         trainer.train()
                         trainer.evaluate()
                         run.finish()
         if mission=='lb':
-                run=wandb.init(project="metaeval  "+"lr= "+str(lr)+"  nepoch= "+str(num_epochs),group='lower bound',name='all_tasks')
-                training_args = TrainingArguments('all tasks',
-                                    evaluation_strategy="epoch",
-                                    learning_rate= lr,
-                                    num_train_epochs=num_epochs,
-                                    save_strategy="no",
-                                    report_to="wandb")
+                run = wandb.init(project="model= "+ model_name+" lr= "+str(lr)+"  nepoch= "+str(num_epochs),group='   '+v,name='all_tasks')
+                training_args = TrainingArguments(task,                            
+                        evaluation_strategy="epoch",
+                        save_strategy="no",
+                        learning_rate= lr,
+                        num_train_epochs=num_epochs,
+                        weight_decay=0.001,
+                        auto_find_batch_size=True,
+                        report_to='wandb'
+                        )
                 dataset=fusion_dataset(tasks)
                 tokenized_dataset=dataset.map(tokenize_function,batched=True)
                 trainer = Trainer(      model=model,
