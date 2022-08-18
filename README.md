@@ -1,5 +1,5 @@
 # Growing-Neural-Networks---Stage2A
-Ce repository Git contient les codes utilisés lors du stage et qui étaient conscis pour être exécutés en Grid5000 
+Ce repository Git contient les résultats et les codes utilisés lors du stage et qui étaient conscis pour être exécutés en Grid5000 
 
 ## Papiers de recherche sur les transformers, réseaux de neurones grossissants...
 
