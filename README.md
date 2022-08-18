@@ -14,6 +14,7 @@ __[Growing Neural Networks Achieve Flatter Minima](https://hal.archives-ouvertes
 __[Documentation des transformers HuggingFace](https://huggingface.co/docs/transformers/main/en/index)__\
 __[Grid 5000 documentation](https://www.grid5000.fr/w/Getting_Started)__  
 __[Guide pour l'utilisation de OAR](https://gricad-doc.univ-grenoble-alpes.fr/hpc/joblaunch/)__
+__[Leaderbords des performances des modèles sur les tâches de GLUE](https://paperswithcode.com/dataset/glue)__
 ## Réserver un gpu sur Grid5000 et run le fichier test en mode interactif
 ```
 ssh alouzali@access.grid5000.fr
@@ -39,5 +40,6 @@ chmod +x finetuning_distilbert.sh
 oarsub -S ./finetuning_distilbert.sh
 ```
 ## Comparaison des learning rates lors du finetuning
-La variation du nombre d'epochs n'avait pas l'air d'optimiser les performances vu le modèle 'bert' est déjà préentrainé, on a opté pour une comparaison entre plusieurs learning rates\
-![capture](https://user-images.githubusercontent.com/74707235/185374162-f9ccf3fa-7f9e-499d-8da6-4c7b9ce0feda.png)
+La variation du nombre d'epochs n'avait pas optimisé les performances vu le modèle 'bert' est déjà préentrainé, on a opté pour une comparaison entre plusieurs learning rates\
+![capture](https://user-images.githubusercontent.com/74707235/185374162-f9ccf3fa-7f9e-499d-8da6-4c7b9ce0feda.png)\
+
