@@ -3,4 +3,4 @@
 #OAR -t exotic
 #OAR -l /gpu=2,walltime= 22:22:22
 #OAR --stdout result_finetuning.txt
-python finetuning_metaeval_with_unsup_risk.py
+python finetuning_metaeval.py
