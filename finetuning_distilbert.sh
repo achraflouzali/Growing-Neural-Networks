@@ -4,3 +4,4 @@
 #OAR -l /gpu=1
 #OAR --stdout result_finetuning.txt
 python finetuning_distilbert.py
+
