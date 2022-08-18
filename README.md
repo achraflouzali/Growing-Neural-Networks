@@ -40,4 +40,4 @@ oarsub -S ./finetuning_distilbert.sh
 ```
 ## Comparaison des learning rates lors du finetuning
 La variation du nombre d'epochs n'avait pas l'air d'optimiser les performances vu le modèle 'bert' est déjà préentrainé, on a opté pour une comparaison entre plusieurs learning rates\
-fff
+![This is an image](https://postimg.cc/8sj4jRwp)
