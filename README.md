@@ -13,7 +13,7 @@ __[Growing Neural Networks Achieve Flatter Minima](https://hal.archives-ouvertes
 
 __[Documentation des transformers HuggingFace](https://huggingface.co/docs/transformers/main/en/index)__\
 __[Grid 5000 documentation](https://www.grid5000.fr/w/Getting_Started)__  
-__[Guide pour l'utilisation de OAR](https://gricad-doc.univ-grenoble-alpes.fr/hpc/joblaunch/)__
+__[Guide pour l'utilisation de OAR](https://gricad-doc.univ-grenoble-alpes.fr/hpc/joblaunch/)__  
 __[Leaderbords des performances des modèles sur les tâches de GLUE](https://paperswithcode.com/dataset/glue)__
 ## Réserver un gpu sur Grid5000 et run le fichier test en mode interactif
 ```
